@@ -1,11 +1,11 @@
-#noun_noun_sims=../../../data/nouns_min_92.csv
-#stat_stat_sims=../../../data/statement_min_92
-#noun_stat=../../../data/noun_state.csv
+noun_noun_sims=../../../data/nouns_min_92.csv
+stat_stat_sims=../../../data/statement_min_92
+noun_stat=../../../data/noun_state.csv
 
 # test files
-noun_noun_sims=../../../data/test_nn.csv
-stat_stat_sims=../../../data/test_ss.csv
-noun_stat=../../../data/test_ns.csv
+# noun_noun_sims=../../../data/test_nn.csv
+# stat_stat_sims=../../../data/test_ss.csv
+# noun_stat=../../../data/test_ns.csv
 
 # to filter out to low similarities
 max_cos_dist=0.9
@@ -45,7 +45,8 @@ prepend 'word:string:nouns\tterm:string:stats\ttype\tpmi:float' ../weltmodell_da
 echo "Finished ../weltmodell_data/in_state_rels.csv"
 
 # get may be relations
-awk 'BEGIN { FS="\t";  OFS="\t"} { if($3 ~ /} may be {/)  split($5,nouns,", ")} END {print substr(nouns[1],2),substr(nouns[2],0,length(nouns[2])-1),"MAY_BE"}' $noun_stat > ../weltmodell_data/may_be_rels.csv
+#awk 'BEGIN { FS="\t";  OFS="\t"} { if($3 ~ /} may be {/)  split($5,nouns,", ")} END {print substr(nouns[1],2),substr(nouns[2],0,length(nouns[2])-1),"MAY_BE"}' $noun_stat > ../weltmodell_data/may_be_rels.csv
+awk 'BEGIN { FS="\t";  OFS="\t"} { if($3 ~ /} may be {/)  {split($5,nouns,", "); print substr(nouns[1],2),substr(nouns[2],0,length(nouns[2])-1),"MAY_BE"}}' $noun_stat > ../weltmodell_data/may_be_rels.csv
 prepend 'word:string:nouns\tword:string:nouns\ttype' ../weltmodell_data/may_be_rels.csv
-echo "Finished ../weltmodell_data/may_be_rels.csv"
+echo "Finished ../weltmodell_data/mafy_be_rels.csv"
 

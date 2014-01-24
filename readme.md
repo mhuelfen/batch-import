@@ -11,7 +11,7 @@ data is written to `/weltmodell_data`
 
 ### Batch Import
 * run import script from main directory
-`weltmodell_batch/import.sh`
+`weltmodell_batch/import.sh` (needs Java7)
 
 ### Access Graph DB
 * download neo4j 2.0 http://www.neo4j.org/download

@@ -1,3 +1,38 @@
+# Using Batch Importer with Weltmodell
+
+### Convert Data
+
+`cd pre_process_scripts`
+edit paths to weltmodell files in convert script
+
+run convert script
+`./convert_wm_files_for_batch_input.sh `
+data is written to `/weltmodell_data`
+
+### Batch Import
+* run import script from main directory
+`weltmodell_batch/import.sh`
+
+### Access Graph DB
+* download neo4j 2.0 http://www.neo4j.org/download
+
+* set database path in conf/conf/neo4j-server.properties
+
+`org.neo4j.server.database.location=<path to bach-import-weltmodell>/target/weltmod_graph.db`
+
+* start neo4j server
+`bin/neo4j start`
+
+* access web interface at [http://localhost:7474](http://localhost:7474)
+
+### Example Query
+````
+START m=node:nouns(word="dark"),n=node:nouns(word="moon") Match p=shortestPath((n)-[*..4]-(m))
+RETURN EXTRACT( n in FILTER( x IN nodes(p) WHERE HAS(x.word)) | [id(n),n.word] ) as nouns,
+EXTRACT( s in FILTER( v IN nodes(p) WHERE HAS(v.term)) | [id(s),s.term] ) as stats,
+EXTRACT( r IN relationships(p) |[id(r),type(r),r]) as rels;
+````
+
 # Neo4j (CSV) Batch Importer
 
 This software is licensed under the [GPLv3](http://www.gnu.org/licenses/gpl-3.0.en.html) for now. 

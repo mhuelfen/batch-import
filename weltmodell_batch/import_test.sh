@@ -1,0 +1,3 @@
+echo "Run in main directory sh sample/import_test.sh"
+mvn test-compile exec:java -Dexec.mainClass="org.neo4j.batchimport.Importer" \
+  -Dexec.args="weltmodell_batch/batch.properties target/weltmod_test_graph.db weltmodell_test_data/noun_nodes.csv,weltmodell_test_data/stat_nodes.csv weltmodell_test_data/noun_sim_rels.csv,weltmodell_test_data/stat_sim_rels.csv,weltmodell_test_data/in_state_rels.csv,weltmodell_test_data/may_be_rels.csv"

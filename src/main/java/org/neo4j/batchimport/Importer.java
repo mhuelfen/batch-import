@@ -148,6 +148,11 @@ public class Importer {
             final long end = id(data, 1);
             if (start==-1 || end==-1) {
                 skipped++;
+                if (skipped < 10){
+                	System.out.print(start + " " + end + " : ");
+                	((CsvLineData) data).printContent();	
+                }
+                
                 continue;
             }
             final RelType type = relType.update(data.getRelationshipTypeLabel());

@@ -4,6 +4,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 
 import static org.neo4j.helpers.collection.MapUtil.map;
 
@@ -15,6 +16,7 @@ public class CsvLineData extends AbstractLineData {
         this.csvReader = new CSVReader(reader, delim,'"','\\',0,false,false);
         initHeaders(createHeaders(readRawRow()));
         createMapData(lineSize, offset);
+        System.out.println(delim);
     }
 
     @Override
@@ -32,8 +34,17 @@ public class CsvLineData extends AbstractLineData {
         for (int i = 0; i < row.length && i < lineSize; i++) {
             String value = row[i];
             lineData[i] = value == null || value.isEmpty() ? null : convert(i, value);
+            
         }
         return true;
+    }
+    
+    public void printContent(){
+    	for (Object x : this.lineData){
+        	System.out.print(x + " ");	
+        }
+    	System.out.println("");
+
     }
 
 }

@@ -1,37 +1,53 @@
 # Using Batch Importer with Weltmodell
 
-### Convert Data
+## Using the Weltmodell Batch Importer
 
-`cd pre_process_scripts`
-edit paths to weltmodell files in convert script
+### 1. Convert Weltmodell Data
+The importer needs a certain cvs format (s. below for more information). The transformation of the weltmodell data is performed by a bash script.
 
-run convert script
-`./convert_wm_files_for_batch_input.sh `
-data is written to `/weltmodell_data`
 
-### Batch Import
-* run import script from main directory
+1. `cd pre_process_scripts`
+2. open convert_wm_files_for_batch_input.sh
+3. edit paths to weltmodell source csv files in convert script
+`
+noun_noun_sims=<noun - noun similarity file>  
+stat_stat_sims=<statement - statement similarity file>  
+noun_stat=<noun - statement file>  
+`
+
+4. run convert script
+`./convert_wm_files_for_batch_input.sh `  
+the converted data is written to `/weltmodell_data`
+
+### 2. run Batch Importer
+* run the import script from main directory
 `weltmodell_batch/import.sh` (needs Java7)
 
-### Access Graph DB
-* download neo4j 2.0 http://www.neo4j.org/download
 
-* set database path in conf/conf/neo4j-server.properties
+### Configuration
++ to filter out to low similarities change the _max_cos_dist_ parameter  
+at the moment set to `max_cos_dist=0.88`
 
+## Accessing the local ReasonGraph DB
+1. download neo4j 2.0 http://www.neo4j.org/download
+2. set database path in conf/conf/neo4j-server.properties
 `org.neo4j.server.database.location=<path to bach-import-weltmodell>/target/weltmod_graph.db`
 
-* start neo4j server
+3. start neo4j server
 `bin/neo4j start`
 
-* access web interface at [http://localhost:7474](http://localhost:7474)
+4. access web interface at [http://localhost:7474](http://localhost:7474)
 
 ### Example Query
 ````
-START m=node:nouns(word="dark"),n=node:nouns(word="moon") Match p=shortestPath((n)-[*..4]-(m))
+START n=node:nouns(word="shorts" ),m=node:nouns(word="beach")
+MATCH p=allShortestPaths((n)-[*..5]->(m))
 RETURN EXTRACT( n in FILTER( x IN nodes(p) WHERE HAS(x.word)) | [id(n),n.word] ) as nouns,
 EXTRACT( s in FILTER( v IN nodes(p) WHERE HAS(v.term)) | [id(s),s.term] ) as stats,
-EXTRACT( r IN relationships(p) |[id(r),type(r),r]) as rels;
+EXTRACT( r IN relationships(p) |[id(r),type(r),r]) as rels, p LIMIT 15;
 ````
+
+------
 
 # Neo4j (CSV) Batch Importer
 
@@ -363,5 +379,6 @@ Sorts a given relationship-CSV file by min(start,end) as required for the parall
 for the actual sorting with a custom Comparator.
 
 `org.neo4j.batchimport.utils.RelationshipSorter` rels-input.csv rels-output.csv
+
 
 

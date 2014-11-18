@@ -1,6 +1,9 @@
+# welt modell source files
 noun_noun_sims=../../../data/nouns_min_92.csv
 stat_stat_sims=../../../data/statement_min_92
 noun_stat=../../../data/noun_state.csv
+
+# directory for converted files
 output_dir=../weltmodell_data
 
 # # test files

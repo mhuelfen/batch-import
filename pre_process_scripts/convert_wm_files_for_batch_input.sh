@@ -18,7 +18,7 @@ function prepend {
     echo -e $1 | cat - $2 > temp && mv temp $2
 }
 
-### make node files
+# ### make node files
 
 # get all nouns
 cut -f 1,2 $noun_noun_sims| tr "\t" "\n"  | sort | uniq | awk 'BEGIN { FS="\t";  OFS="\t"} {print $1,"Noun"}' > $output_dir/noun_nodes.csv
@@ -42,14 +42,15 @@ awk -v mcd=$max_cos_dist 'BEGIN { FS="\t";  OFS="\t"} { if ($3 <= mcd) print $1,
 prepend 'term:string:stats\tterm:string:stats\ttype\tcos_dist:float' $output_dir/stat_sim_rels.csv
 echo "Finished $output_dir/stat_sim_rels.csv"
 
-# noun - statement rels
-awk 'BEGIN { FS="\t";  OFS="\t"} {print $4,$3,"IN_STATE",$15}' $noun_stat > $output_dir/in_state_rels.csv
-prepend 'word:string:nouns\tterm:string:stats\ttype\tpmi:float' $output_dir/in_state_rels.csv
-echo "Finished $output_dir/in_state_rels.csv"
+# now in python script
+# # noun - statement rels
+# awk 'BEGIN { FS="\t";  OFS="\t"} {print $4,$3,"IN_STATE",$15}' $noun_stat > $output_dir/in_state_rels.csv
+# prepend 'word:string:nouns\tterm:string:stats\ttype\tpmi:float' $output_dir/in_state_rels.csv
+# echo "Finished $output_dir/in_state_rels.csv"
 
-# get may be relations
-#awk 'BEGIN { FS="\t";  OFS="\t"} { if($3 ~ /} may be {/)  split($5,nouns,", ")} END {print substr(nouns[1],2),substr(nouns[2],0,length(nouns[2])-1),"MAY_BE"}' $noun_stat > $output_dir/may_be_rels.csv
-awk 'BEGIN { FS="\t";  OFS="\t"} { if($3 ~ /} may be {/)  {split($5,nouns,", "); print substr(nouns[1],2),substr(nouns[2],0,length(nouns[2])-1),"MAY_BE"}}' $noun_stat > $output_dir/may_be_rels.csv
-prepend 'word:string:nouns\tword:string:nouns\ttype' $output_dir/may_be_rels.csv
-echo "Finished $output_dir/may_be_rels.csv"
+# # get may be relations
+# #awk 'BEGIN { FS="\t";  OFS="\t"} { if($3 ~ /} may be {/)  split($5,nouns,", ")} END {print substr(nouns[1],2),substr(nouns[2],0,length(nouns[2])-1),"MAY_BE"}' $noun_stat > $output_dir/may_be_rels.csv
+# awk 'BEGIN { FS="\t";  OFS="\t"} { if($3 ~ /} may be {/)  {split($5,nouns,", "); print substr(nouns[1],2),substr(nouns[2],0,length(nouns[2])-1),"MAY_BE",$15}}' $noun_stat > $output_dir/may_be_rels.csv
+# prepend 'word:string:nouns\tword:string:nouns\ttype\tpmi:float' $output_dir/may_be_rels.csv
+# echo "Finished $output_dir/may_be_rels.csv"
 

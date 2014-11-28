@@ -36,6 +36,17 @@ be  {___} may be under {___}    {country} may be under {___}    sun [country, su
 
 re_verb = re.compile('\} (may .*?) \{');
 
+max_pmi = 0.899047333178
+min_pmi = 2.5076055075e-08
+
+def normalize_pmi (pmi):
+    '''
+    normalize pmi value to value between 0 and 1 where 1 is the max value seen
+    '''
+
+    return (pmi - min_pmi) / (max_pmi - min_pmi)
+
+
 def convert_wm(wm_path, result_path_in_state, result_path_binary):
     '''
     Converts a weltmodell tsv file into a conceptnet plain json file.
@@ -49,8 +60,8 @@ def convert_wm(wm_path, result_path_in_state, result_path_binary):
     with open(result_path_in_state, 'w') as result_file_in_state:
         with open(result_path_binary, 'w') as result_file_binary:
             # start files
-            result_file_in_state.write('word:string:nouns\tterm:string:stats\ttype\tpmi:float\n')
-            result_file_binary.write('word:string:nouns\tword:string:nouns\ttype\tpmi:float\n')
+            result_file_in_state.write('word:string:nouns\tterm:string:stats\ttype\tpmi:float\tweight:float\n')
+            result_file_binary.write('word:string:nouns\tword:string:nouns\ttype\tpmi:float\tweight:float\n')
 
              # read wm file
             with open(wm_path, 'r') as csvfile:
@@ -67,7 +78,8 @@ def convert_wm(wm_path, result_path_in_state, result_path_binary):
                         match = re.search(re_verb, row[2])
                         try:
                             verb = match.group(1)
-                            line = concepts[0].strip() + '\t' + concepts[1].strip() + '\t' + verb.replace(' ','_').upper() + '\t' + row[14]
+                            norm_pmi = normalize_pmi(float(row[14]))
+                            line = concepts[0].strip() + '\t' + concepts[1].strip() + '\t' + verb.replace(' ','_').upper() + '\t' + row[14] + '\t' + str(norm_pmi)
                             # skip entry if last line had same frame and concepts even PMI is different
                             if (row[1] == last_frame and concepts == last_concepts):
                                 # print row
@@ -82,7 +94,8 @@ def convert_wm(wm_path, result_path_in_state, result_path_binary):
                         last_frame = row[1]
                         last_row = row
                     else: 
-                        line = row[3] + '\t' + row[2] + '\t' + 'IN_STATE' + '\t' + row[14]
+                        norm_pmi = normalize_pmi(float(row[14]))
+                        line = row[3] + '\t' + row[2] + '\t' + 'IN_STATE' + '\t' + row[14] + '\t' + str(norm_pmi)
                         result_file_in_state.write(line + '\n')
 
                     line_count += 1

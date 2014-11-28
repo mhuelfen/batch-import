@@ -1,7 +1,10 @@
 # encoding: utf-8
 
 '''
-Script to convert the weltmodell into the conceptnet.
+Converts weltmodell file for import into neo4j with the batch importer.
+
+binary relations are split are created with the verb as relation between the nouns
+all other with the IN_STATE relation between noun and statement
 
 @author: Michael A. Huelfenhaus
 '''

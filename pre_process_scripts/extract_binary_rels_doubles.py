@@ -16,64 +16,25 @@ import re
 from getopt import getopt, GetoptError
 
 help_message = '''
-usage: python extract_binary_rels.py <weltmodell_tsv_file> <result_tsv_file_in_state> <result_tsv_file_binary>
+usage: python extract_binary_rels_doubles.py <weltmodell_tsv_file> <result_tsv_file_in_state> <result_tsv_file_binary>
+
+Needs sorted noun state file
+cat noun_state.csv | sort -t$'\t' -k 1,1 -k 5,5 > noun_state_sorted.csv
 
 Converts weltmodell file for import into neo4j with the batch importer.
 
 binary relations are split are created with the verb as relation between the nouns
 all other with the IN_STATE relation between noun and statement
+
+double relations from the same frame but different statment are used only once -> only first and its pmi value
+
+e.g.
+be  {___} may be under {___}    {___} may be under {sun}    country [country, sun]  721773  52311   3121    1644927 21  33435   14  2098370619  1.744369007845882   0.09266054477531005 24.421166109842346  2001
+
+be  {___} may be under {___}    {country} may be under {___}    sun [country, sun]  2676879 4003    2614    1189271 34  14876   14  2098370619  2.245996347903166   0.11930689219081306 31.443948870644327  2001
 '''
 
 re_verb = re.compile('\} (may .*?) \{');
-
-
-# def make_json_line(wm_line, concepts):
-#     '''
-#     Transforms an weltmodell line into a conceptnet json line.
-#     '''
-#     # extract realtion
-
-#     rel = wm_line[1].replace('{___}','').strip().replace(' ','_')
-
-#     rel_url = base_rel_url + rel
-#     start_url = base_concept_url + concepts[0].strip().replace(' ','_')
-#     end_url = base_concept_url + concepts[1].strip().replace(' ','_')
-
-#     features = '["' + start_url + ' ' + rel_url + ' -","' + start_url + ' ' + rel_url + ' -","' + '- ' +rel_url + ' ' + end_url + '"]'
-
-#     uri = '/a/[' + rel_url + ',' + start_url + ',' + end_url + ']'
-
-#     norm_pmi = wm_line[14]
-#     weight = norm_pmi
-
-#     # TODO add all verbargs to surface text
-#     surface_text = wm_line[19]
-
-#     # make id
-#     id_str = make_id(uri, weight, surface_text)
-
-#     json_items= [uri, weight, dataset, end_url, surface_text, start_url, license,
-#         id_str
-# , source_uri, sources, context, features, rel_url]
-#     #make json line
-#     json_line = '{'
-#     json_line += '"uri": "' + uri + '",'
-#     json_line += '"weight": ' + norm_pmi + ','
-#     json_line += '"dataset": "' + dataset + '",'
-#     json_line += '"surfaceText": "' + surface_text + '",'
-#     json_line += '"start": "' + start_url + '",'
-#     json_line += '"license": "' + license + '",'
-#     json_line += '"id": "' + id_str + '",'
-#     json_line += '"source_uri": "' + source_uri + '",'
-#     json_line += '"sources": ' + sources + ','
-#     json_line += '"context": "' + context + '",'
-#     json_line += '"features": ' + features + ','
-#     json_line += '"rel": "' + rel_url + '"'
-#     json_line += '}'
-
-#     # print wm_line
-#     return json_line
-
 
 def convert_wm(wm_path, result_path_in_state, result_path_binary):
     '''
